@@ -44,6 +44,26 @@
 
 (defun walk-code (body)
   "Replace hash operators by their custom variant"
+  (flet ((contains-unsupported-loop ()
+           (subst-if 'unused (lambda (form)
+                               (if (and (listp form) 
+                                        (symbolp (car form))
+                                        (string= (car form) 'loop)
+                                        (loop for x in (cdr form)
+                                            thereis (and (symbolp x)
+                                                         (member x '(hash-key hash-keys
+                                                                     hash-values hash-values)
+                                                                 :test 'string=))))
+                                   (return-from contains-unsupported-loop form)
+                                 nil))
+                     body)
+           nil))
+    (let ((loop-form (contains-unsupported-loop)))
+      (when loop-form
+        (error "Iterating with LOOP over a hash table is unsupported by CL-CUSTOM-HASH-TABLE. ~
+Please use WITH-HASH-TABLE-ITERATOR or MAPHASH instead.
+Offending form: ~S" loop-form))))
+  
   ;; Don't destructively modify original source conses
   (setf body (copy-tree body))
   (loop for custom-sym in '(gethash remhash hash-table-count maphash
