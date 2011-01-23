@@ -4,19 +4,35 @@ CL-CUSTOM-HASH-TABLE: Custom hash tables for Common Lisp
 Introduction
 ------------
 
-This library allows creation and use of hash tables with arbitrary TEST/HASH functions,
-in addition to the TEST functions allowed by the standard (EQ, EQL, EQUAL and EQUALP),
-even in implementations that don't support this functionality directly.
+CL-CUSTOM-HASH-TABLE allows creation and use of "custom hash tables".
+Custom hash tables can use arbitrary TEST/HASH functions,
+in addition to the TEST functions allowed by the standard
+(EQ, EQL, EQUAL and EQUALP).
+
+This library is primarily a compatibility layer, unifying how to create these hash table in different Lisp implementations. Furthermore this library provides a fully functional fallback solution for implementations that don't support this functionality natively (yet).
+
+Compatibility
+-------------
+
+This library does not shadow symbols in the COMMON-LISP package. It does require that all access to (potential) custom hash tables is lexical wrapped in a WITH-CUSTOM-HASH-TABLE form (see example below).
+
+The standard hash table related functions are **supported**:
+
+* get/set: GETHASH, REMHASH, CLRHASH;
+* iteration: WITH-HASH-TABLE-ITERATOR, MAPHASH, 
+* statistics: HASH-TABLE-COUNT, HASH-TABLE-REHASH-SIZE, HASH-TABLE-REHASH-THRESHOLD HASH-TABLE-SIZE
+
+Hash table iteration using LOOP (using HASH-KEY or HASH-VALUE) is **not supported** in Lisp implementations where the fall-back solution is used.
 
 Supported implementations
 -------------------------
 
-* Allegro CL 8.2
-* Clozure CL 1.5
-* CMUCL 20B
-* ECL 11.1.1
-* LispWorks 6.0
-* SBCL 1.0.45
+* Allegro CL 8.2 (native support)
+* Clozure CL 1.5 (native support)
+* CMUCL 20B (native support)
+* ECL 11.1.1 (fall-back implementation)
+* LispWorks 6.0 (native support)
+* SBCL 1.0.45 (native support)
 
 Example
 -------
@@ -61,9 +77,16 @@ Implementation details
     
 Several Lisp implementations already support
 custom TEST and HASH arguments for MAKE-HASH-TABLE.
-This library is a small wrapper around that functionality.
+This library is a small wrapper around the vendor-specific extensions.
 (Allegro CL, CCL, CMUCL, LispWorks, SBCL) 
 
-In other implementations a workaround is used, with an alternative
-hash table implementation and a code walker that replaces GETHASH and friends
-by custom functions. (ECL) 
+In other Lisp implementations a fall-back solution is used:
+
+* custom hash tables are created on top of standard hash tables;
+* the WITH-CUSTOM-HASH-TABLE code walker replaces GETHASH and friends by custom functions that work on both standard and "custom" hash tables. (ECL)
+
+How does this compare to [genhash](http://www.cliki.net/genhash)?
+----------------------------------
+
+* genhash is complete hash table implementation; CL-CUSTOM-HASH-TABLE is primarily a compatibility layer, and offers a simple fall-back solution built on top of standard hash tables.
+* genhash comes with its own API; CL-CUSTOM-HASH-TABLE uses the standard hash table API.
