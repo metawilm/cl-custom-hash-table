@@ -19,6 +19,7 @@
     `(progn #+cmu (extensions:define-hash-table-test ',hash-table-test-sym
                       (function ,test) (function ,hash-function))
             (defun ,make (&rest options)
+              #+ecl (declare (ignore options))
               (checking-reader-conditionals
                #+(or allegro ccl lispworks)
                (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
@@ -74,8 +75,9 @@
                              finally (return (values default nil)))))))
 
 (defun (setf gethash) (new-val key ht &optional default)
+  (declare (ignore default))
   (etypecase ht
-    (hash-table (setf (cl:gethash key ht default) new-val))
+    (hash-table (setf (cl:gethash key ht) new-val))
     (custom-hash-table (pop ht)
                        (let* ((test-fn (pop ht))
                               (hash-fn (pop ht))
