@@ -65,7 +65,7 @@ that don't support custom TEST/HASH functions natively!
     
      (with-custom-hash-table
         (setf (gethash 1 *foo-ht*) 1
-	      (gethash 10 *foo-ht*) 10
+              (gethash 10 *foo-ht*) 10
               (gethash 2 *foo-ht*) 2)
         (maphash (lambda (k v) 
                     (format t "~A: ~A~%" k v)
