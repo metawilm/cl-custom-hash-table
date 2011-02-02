@@ -11,6 +11,11 @@ in addition to the TEST functions allowed by the standard
 
 This library is primarily a compatibility layer, unifying how to create these hash table in different Lisp implementations. Furthermore this library provides a simple yet fully functional fall-back solution for implementations that don't support this functionality natively (yet).
 
+License
+-------
+
+CL-CUSTOM-HASH-TABLE is released under a [BSD-like license](http://www.opensource.org/licenses/bsd-license.php), see the ASD file.
+
 Compatibility
 -------------
 
