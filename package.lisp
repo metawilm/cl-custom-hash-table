@@ -15,6 +15,8 @@
   (:use #:common-lisp)
   (:export #:define-custom-hash-table-constructor #:with-custom-hash-table)
   #+custom-hash-table-fallback
-  (:shadow #:gethash #:remhash #:hash-table-count #:maphash
+  (:export #:custom-hash-table)
+  #+custom-hash-table-fallback
+  (:shadow #:hash-table-p #:gethash #:remhash #:hash-table-count #:maphash
            #:with-hash-table-iterator #:clrhash #:hash-table-rehash-size
            #:hash-table-rehash-threshold #:hash-table-size))

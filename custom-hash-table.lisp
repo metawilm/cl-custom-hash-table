@@ -10,6 +10,10 @@
              num whole))
     (car body)))
 
+#+custom-hash-table-fallback
+(defstruct (custom-hash-table (:conc-name cht.))
+  test hash-function real-ht)
+
 (defmacro define-custom-hash-table-constructor (make &key test hash-function)
   (check-type make symbol)
   (check-type test symbol)
@@ -28,10 +32,9 @@
                #+sbcl
                (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
                #+ecl
-               (list :custom-hash-table
-                     ',test
-                     ',hash-function
-                     (make-hash-table :test 'eql)))))))
+               (make-custom-hash-table :test ',test
+                                       :hash-function ',hash-function
+                                       :real-ht (make-hash-table :test 'eql)))))))
 
 (defmacro with-custom-hash-table (&body body)
   #-custom-hash-table-fallback
@@ -66,26 +69,22 @@ Offending form: ~S" loop-form))))
   
   ;; Don't destructively modify original source conses
   (setf body (copy-tree body))
-  (loop for custom-sym in '(gethash remhash hash-table-count maphash
-                            with-hash-table-iterator clrhash hash-table-rehash-size
+  (loop for custom-sym in '(hash-table-p make-hash-table gethash remhash hash-table-count
+                            maphash with-hash-table-iterator clrhash hash-table-rehash-size
                             hash-table-rehash-threshold hash-table-size)
       for cl-sym = (find-symbol (symbol-name custom-sym) '#:common-lisp)
       do (setf body (nsubst custom-sym cl-sym body))
       finally (return body)))
 
-(deftype custom-hash-table ()
-  '(satisfies custom-hash-table-fallback-p))
-
-(defun custom-hash-table-fallback-p (x)
-  (and (consp x) (eq (car x) :custom-hash-table)))
+(defun hash-table-p (ht)
+  (typep ht '(or hash-table custom-hash-table)))
 
 (defun gethash (key ht &optional default)
   (etypecase ht
     (hash-table (cl:gethash key ht default))
-    (custom-hash-table (pop ht)
-                       (let* ((test-fn (pop ht))
-                              (hash-fn (pop ht))
-                              (real-ht (pop ht))
+    (custom-hash-table (let* ((test-fn (cht.test ht))
+                              (hash-fn (cht.hash-function ht))
+                              (real-ht (cht.real-ht ht))
                               (key.hash (funcall hash-fn key))
                               (existing-values (gethash key.hash real-ht)))
                          (loop for x-and-val in existing-values
@@ -98,10 +97,9 @@ Offending form: ~S" loop-form))))
   (declare (ignore default))
   (etypecase ht
     (hash-table (setf (cl:gethash key ht) new-val))
-    (custom-hash-table (pop ht)
-                       (let* ((test-fn (pop ht))
-                              (hash-fn (pop ht))
-                              (real-ht (pop ht))
+    (custom-hash-table (let* ((test-fn (cht.test ht))
+                              (hash-fn (cht.hash-function ht))
+                              (real-ht (cht.real-ht ht))
                               (key.hash (funcall hash-fn key))
                               (existing-values (gethash key.hash real-ht)))
                          (loop for x-and-val in existing-values
@@ -113,10 +111,9 @@ Offending form: ~S" loop-form))))
 (defun remhash (key ht)
   (etypecase ht
     (hash-table (cl:remhash key ht))
-    (custom-hash-table (pop ht)
-                       (let* ((test-fn (pop ht))
-                              (hash-fn (pop ht))
-                              (real-ht (pop ht))
+    (custom-hash-table (let* ((test-fn (cht.test ht))
+                              (hash-fn (cht.hash-function ht))
+                              (real-ht (cht.real-ht ht))
                               (key.hash (funcall hash-fn key))
                               (existing-values (gethash key.hash real-ht)))
                          (loop for x-and-val in existing-values
@@ -132,7 +129,7 @@ Offending form: ~S" loop-form))))
 (defun hash-table-count (ht)
   (etypecase ht
     (hash-table (cl:hash-table-count ht))
-    (custom-hash-table (loop with real-ht = (fourth ht)
+    (custom-hash-table (loop with real-ht = (cht.real-ht ht)
                            for entries being each hash-value in real-ht
                            sum (length entries)))))
 
@@ -140,7 +137,7 @@ Offending form: ~S" loop-form))))
   ;; When changing, ensure remhash and (setf gethash) on current key are supported.
   (etypecase ht
     (hash-table (cl:maphash function ht))
-    (custom-hash-table (loop with real-ht = (fourth ht)
+    (custom-hash-table (loop with real-ht = (cht.real-ht ht)
                            for entries being each hash-value in real-ht
                            do (loop while entries
                                   do (destructuring-bind (k . v) 
@@ -158,7 +155,7 @@ Offending form: ~S" loop-form))))
        (etypecase ,ht
          (hash-table (cl:with-hash-table-iterator (,name ,ht) ,@body))
          (custom-hash-table
-          (let ((,real-ht (fourth ,ht)))
+          (let ((,real-ht (cht.real-ht ,ht)))
             (cl:with-hash-table-iterator (,real-iter ,real-ht)
               (let (,current-key-val-list)
                 (macrolet
@@ -175,24 +172,19 @@ Offending form: ~S" loop-form))))
                                           (return-from ,name nil)))))))
                   ,@body)))))))))
 
-(defun clrhash (ht)
-  (etypecase ht
-    (hash-table (cl:clrhash ht))
-    (custom-hash-table (cl:clrhash (fourth ht)))))
-
-(defun hash-table-rehash-size (ht)
-  (etypecase ht
-    (hash-table (cl:hash-table-rehash-size ht))
-    (custom-hash-table (cl:hash-table-rehash-size (fourth ht)))))
-
-(defun hash-table-rehash-threshold (ht)
-  (etypecase ht
-    (hash-table (cl:hash-table-rehash-threshold ht))
-    (custom-hash-table (cl:hash-table-rehash-threshold (fourth ht)))))
-
-(defun hash-table-size (ht)
-  (etypecase ht
-    (hash-table (cl:hash-table-size ht))
-    (custom-hash-table (cl:hash-table-size (fourth ht)))))
+(progn 
+  (defun clrhash (ht)
+    (cl:clrhash #1=(etypecase ht
+                     (hash-table ht)
+                     (custom-hash-table (cht.real-ht ht)))))
+  
+  (defun hash-table-rehash-size (ht)
+    (cl:hash-table-rehash-size #1#))
+  
+  (defun hash-table-rehash-threshold (ht)
+    (cl:hash-table-rehash-threshold #1#))
+  
+  (defun hash-table-size (ht)
+    (cl:hash-table-size #1#)))
 
 ) ;; #+

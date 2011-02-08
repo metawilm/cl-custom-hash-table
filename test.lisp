@@ -5,7 +5,7 @@
 (defpackage #:cl-custom-hash-table.test
   (:use #:cl-custom-hash-table #:common-lisp)
   #+custom-hash-table-fallback
-  (:import-from #:cl-custom-hash-table #:custom-hash-table-fallback-p)
+  (:import-from #:cl-custom-hash-table #:custom-hash-table)
   (:export #:run))
 
 (in-package :cl-custom-hash-table.test)
@@ -29,8 +29,8 @@
 (defun run () 
   (setf *foo-ht* (make-foo-ht))
   #+custom-hash-table-fallback
-  (progn (assert (custom-hash-table-fallback-p *foo-ht*))
-         (assert (not (custom-hash-table-fallback-p (make-hash-table)))))
+  (progn (assert (typep *foo-ht* 'custom-hash-table))
+         (assert (not (typep (make-hash-table) 'custom-hash-table))))
   (with-custom-hash-table      
     (setf (gethash 1 *foo-ht*) 1
           (gethash 10 *foo-ht*) 10
