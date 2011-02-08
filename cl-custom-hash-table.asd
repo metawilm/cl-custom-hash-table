@@ -7,7 +7,7 @@
 in addition to the TEST functions allowed by the standard (EQ, EQL, EQUAL and EQUALP),
 even in implementations that don't support this functionality directly."
     :author "Willem Broekema"
-    :version "0.1"
+    :version "0.2"
     :licence "
 Copyright (c) 2010, Willem Broekema
 All rights reserved.
