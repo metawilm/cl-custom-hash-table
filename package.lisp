@@ -8,8 +8,7 @@
              (setf *features* (remove feature *features*)))))
     (register-feature :custom-hash-table-fallback
                       #+(or allegro ccl cmu lispworks sbcl) nil
-                      #+ecl t
-                      #-(or allegro ccl cmu lispworks sbcl ecl) (error "Unexpected implementation"))))
+                      #-(or allegro ccl cmu lispworks sbcl) t)))
 
 (defpackage #:cl-custom-hash-table
   (:use #:common-lisp)
