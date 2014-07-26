@@ -15,6 +15,9 @@
   test hash-function real-ht)
 
 (defmacro define-custom-hash-table-constructor (make &key test hash-function)
+  "Generate a function that can be used to create a new hash table that uses the given TEST and HASH-FUNCTION.
+For example, after: (define-custom-hash-table-constructor make-foo-ht :test foo-equal-p :hash-function foo-hash)
+the function MAKE-FOO-HT is defined."
   (check-type make symbol)
   (check-type test symbol)
   (check-type hash-function symbol)
@@ -37,6 +40,9 @@
                                        :real-ht (make-hash-table :test 'eql)))))))
 
 (defmacro with-custom-hash-table (&body body)
+  "Wrap BODY in an environment where access to custom hash-tables (GET-HASH etc) works as expected.
+This macro is a no-op in Lisp implementations that support custom hash-tables natively, but it is
+required in implementations where the fallback solution is used (*FEATURES* value :CUSTOM-HASH-TABLE-FALLBACK)"
   #-custom-hash-table-fallback
   `(progn ,@body)
   #+custom-hash-table-fallback
