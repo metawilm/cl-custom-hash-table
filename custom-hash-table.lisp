@@ -55,7 +55,7 @@
                                         (loop for x in (cdr form)
                                             thereis (and (symbolp x)
                                                          (member x '(hash-key hash-keys
-                                                                     hash-values hash-values)
+                                                                     hash-value hash-values)
                                                                  :test 'string=))))
                                    (return-from contains-unsupported-loop form)
                                  nil))
