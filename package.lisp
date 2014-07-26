@@ -1,3 +1,5 @@
+;; -*- Mode: LISP; Syntax: COMMON-LISP; Package: CL-USER -*-
+
 (in-package #:cl-user)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
