@@ -64,3 +64,6 @@
     (is (plusp (hash-table-size *foo-ht*))))
   (format t "Test success!~%")
   t)
+
+(defun run ()
+  (basic-test))
