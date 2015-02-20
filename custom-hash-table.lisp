@@ -34,7 +34,7 @@ the function MAKE-FOO-HT is defined."
                (apply #'make-hash-table :test ',hash-table-test-sym options)
                #+sbcl
                (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
-               #+ecl
+               #-(or allegro ccl cmu lispworks sbcl)
                (make-custom-hash-table :test ',test
                                        :hash-function ',hash-function
                                        :real-ht (make-hash-table :test 'eql)))))))
