@@ -28,12 +28,10 @@ the function MAKE-FOO-HT is defined."
             (defun ,make (&rest options)
               #+ecl (declare (ignore options))
               (checking-reader-conditionals
-               #+(or allegro ccl lispworks)
+               #+(or allegro ccl lispworks sbcl)
                (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
                #+cmu 
                (apply #'make-hash-table :test ',hash-table-test-sym options)
-               #+sbcl
-               (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
                #-(or allegro ccl cmu lispworks sbcl)
                (make-custom-hash-table :test ',test
                                        :hash-function ',hash-function
