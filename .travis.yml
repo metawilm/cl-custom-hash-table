@@ -3,33 +3,40 @@ sudo: required
 
 env:
   matrix:
-      - LISP=abcl
-      - LISP=allegro
-      
-      # Error outside our control:
-      # The command "curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash" failed and exited with 1 during .
-      # - LISP=allegromodern
-      
-      - LISP=ccl
-      - LISP=clisp
-      
-      # Error outside our control:
-      # /home/travis/.cim/bin/cl: 9: .: Can't open /home/travis/.cim/config/current.7469
-      # - LISP=cmucl
-      
-      - LISP=ecl
-      - LISP=sbcl
+    - LISP=abcl
+    - LISP=allegro
 
+    # Error outside our control:
+    # The command "curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash" failed and exited with 1 during .
+    # - LISP=allegromodern
+
+    # Error outside our control: CCL 1.10 and cl-coveralls don't work together (see also cl-coveralls README):
+    # [package cl-coveralls] Not supported implementation: Clozure Common Lisp Version 1.10-r16196  (LinuxX8664)
+    # Therefore use CCL without coverage
+    #- LISP=ccl COVERALLS=true
+    - LISP=ccl
+    
+    - LISP=clisp
+
+    # Error outside our control:
+    # /home/travis/.cim/bin/cl: 9: .: Can't open /home/travis/.cim/config/current.7469
+    # - LISP=cmucl
+
+    - LISP=ecl
+    - LISP=sbcl COVERALLS=true
+    
 install:
   # Install cl-travis
   - curl https://raw.githubusercontent.com/luismbo/cl-travis/master/install.sh | bash
+  # Newest Dexador needed for cl-coveralls -- https://github.com/fukamachi/cl-coveralls/issues/10
+  - git clone https://github.com/fukamachi/dexador.git ~/lisp/dexador
   # Our project
   - git clone https://github.com/metawilm/cl-custom-hash-table.git ~/lisp/cl-custom-hash-table
 
 script:
-  - cl -e '(ql:quickload :cl-custom-hash-table)'
-       -e '(ql:quickload :cl-custom-hash-table-test)'
-       -e '(cl-custom-hash-table-test:run)'
+  - cl -e '#+(or sbcl ccl) (ql:quickload :cl-coveralls)'
+       -e '#+(or sbcl ccl) (coveralls:with-coveralls () (ql:quickload :cl-custom-hash-table) (ql:quickload :cl-custom-hash-table-test) (eval (read-from-string "(cl-custom-hash-table-test:run)")))'
+       -e '#-(or sbcl ccl) (progn (ql:quickload :cl-custom-hash-table) (ql:quickload :cl-custom-hash-table-test) (eval (read-from-string "(cl-custom-hash-table-test:run)")))'
 
 notifications:
   email:
