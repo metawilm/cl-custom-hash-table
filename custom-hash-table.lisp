@@ -26,7 +26,8 @@ the function MAKE-FOO-HT is defined."
     `(progn #+cmu (extensions:define-hash-table-test ',hash-table-test-sym
                       (function ,test) (function ,hash-function))
             (defun ,make (&rest options)
-              #+ecl (declare (ignore options))
+              "OPTIONS are passed on to MAKE-HASH-TABLE if the platform supports that natively; or ignored otherwise."
+              (declare (ignorable options))
               (checking-reader-conditionals
                #+(or allegro ccl lispworks sbcl)
                (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
