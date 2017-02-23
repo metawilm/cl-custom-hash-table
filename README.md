@@ -1,6 +1,8 @@
 CL-CUSTOM-HASH-TABLE: Custom hash tables for Common Lisp
 ========================================================
 
+[![Build Status](https://travis-ci.org/metawilm/cl-custom-hash-table.svg?branch=master)](https://travis-ci.org/metawilm/cl-custom-hash-table)
+
 Introduction
 ------------
 
