@@ -46,22 +46,25 @@
       (flet ((expected-p (set)
                (and (null (set-difference set expected :test 'equal))
                     (null (set-difference expected set :test 'equal)))))
+        ;; Check MAPHASH
         (let (items)
           (maphash (lambda (k v) (push (cons k v) items)) *foo-ht*)
           (is (expected-p items)))
-        (block iter-test
-          (let (items)
-            (with-hash-table-iterator (next *foo-ht*)
-              (multiple-value-bind (entry-p key val) (next)
-                (if entry-p
-                    (push (cons key val) items)
-                  (progn (is (expected-p items))
-                         (return-from iter-test)))))))))
+        ;; Check WITH-HASH-TABLE-ITERATOR
+        (let (items)
+          (with-hash-table-iterator (next *foo-ht*)
+            (loop named iter-test
+                do (multiple-value-bind (entry-p key val) (next)
+                     (if entry-p
+                         (push (cons key val) items)
+                       (return-from iter-test)))))
+          (is (expected-p items)))))
     (clrhash *foo-ht*)
     (is (zerop (hash-table-count *foo-ht*)))
     (is (plusp (hash-table-rehash-size *foo-ht*)))
     (is (plusp (hash-table-rehash-threshold *foo-ht*)))
     (is (plusp (hash-table-size *foo-ht*))))
+  (terpri)
   (format t "Test success!~%")
   t)
 
