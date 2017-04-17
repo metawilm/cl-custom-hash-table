@@ -16,27 +16,32 @@
 
 (defmacro define-custom-hash-table-constructor (make &key test hash-function)
   "Generate a function that can be used to create a new hash table that uses the given TEST and HASH-FUNCTION.
-For example, after: (define-custom-hash-table-constructor make-foo-ht :test foo-equal-p :hash-function foo-hash)
-the function MAKE-FOO-HT is defined."
+For example: (DEFINE-CUSTOM-HASH-TABLE-CONSTRUCTOR MAKE-FOO-HT :TEST FOO-EQUAL-P :HASH-FUNCTION FOO-HASH)
+defines function (MAKE-FOO-HT &REST OPTIONS).
+OPTIONS are passed on to MAKE-HASH-TABLE if the platform supports custom hash tables natively, and ignored otherwise."
   (check-type make symbol)
   (check-type test symbol)
   (check-type hash-function symbol)
-  (let (#+cmu (hash-table-test-sym (intern (format nil "custom-hash-table ~A ~A" test hash-function)
-                                           #.*package*)))
-    `(progn #+cmu (extensions:define-hash-table-test ',hash-table-test-sym
-                      (function ,test) (function ,hash-function))
-            (defun ,make (&rest options)
-              "OPTIONS are passed on to MAKE-HASH-TABLE if the platform supports that natively; or ignored otherwise."
-              (declare (ignorable options))
-              (checking-reader-conditionals
-               #+(or allegro ccl lispworks sbcl)
-               (apply #'make-hash-table :test ',test :hash-function ',hash-function options)
-               #+cmu 
-               (apply #'make-hash-table :test ',hash-table-test-sym options)
-               #-(or allegro ccl cmu lispworks sbcl)
-               (make-custom-hash-table :test ',test
-                                       :hash-function ',hash-function
-                                       :real-ht (make-hash-table :test 'eql)))))))
+  
+  (checking-reader-conditionals
+   
+   #+custom-hash-table-fallback
+   `(defun ,make (&rest options)
+      (declare (ignore options))
+      (make-custom-hash-table :test ',test
+                              :hash-function ',hash-function
+                              :real-ht (make-hash-table :test 'eql)))
+   
+   #+(and custom-hash-table-native cmu)
+   (let ((hash-table-test-sym (intern (format nil "custom-hash-table ~A ~A" test hash-function) #.*package*)))
+     `(progn
+        (extensions:define-hash-table-test ',hash-table-test-sym (function ,test) (function ,hash-function))
+        (defun ,make (&rest options)
+          (apply #'make-hash-table :test ',hash-table-test-sym options))))
+   
+   #+(and custom-hash-table-native (not cmu))
+   `(defun ,make (&rest options)
+      (apply #'make-hash-table :test ',test :hash-function ',hash-function options))))
 
 (defmacro with-custom-hash-table (&body body)
   "Wrap BODY in an environment where access to custom hash-tables (GET-HASH etc) works as expected.

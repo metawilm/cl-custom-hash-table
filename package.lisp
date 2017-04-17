@@ -3,14 +3,20 @@
 (in-package #:cl-user)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  
+  #-(or custom-hash-table-fallback custom-hash-table-native)
   (flet ((register-feature (feature present-p)
            (check-type feature keyword)
            (if present-p
                (pushnew feature *features*)
              (setf *features* (remove feature *features*)))))
-    (register-feature :custom-hash-table-fallback
-                      #+(or allegro ccl cmu lispworks sbcl) nil
-                      #-(or allegro ccl cmu lispworks sbcl) t)))
+    (let ((native (or #+(or allegro ccl cmu lispworks sbcl) t)))
+      (register-feature :custom-hash-table-native native)
+      (register-feature :custom-hash-table-fallback (not native))))
+  
+  #+(and custom-hash-table-fallback custom-hash-table-native)
+  (error "Cannot have both :CUSTOM-HASH-TABLE-NATIVE and :CUSTOM-HASH-TABLE-NATIVE in *FEATURES*"))
+
 
 (defpackage #:cl-custom-hash-table
   (:use #:common-lisp)
