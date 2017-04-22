@@ -24,6 +24,6 @@
   #+custom-hash-table-fallback
   (:export #:custom-hash-table)
   #+custom-hash-table-fallback
-  (:shadow #:hash-table-p #:gethash #:remhash #:hash-table-count #:maphash
+  (:shadow #:hash-table-p #:hash-table-test #:gethash #:remhash #:hash-table-count #:maphash
            #:with-hash-table-iterator #:clrhash #:hash-table-rehash-size
            #:hash-table-rehash-threshold #:hash-table-size))

@@ -79,7 +79,7 @@ Offending form: ~S" loop-form))))
   
   ;; Don't destructively modify original source conses
   (setf body (copy-tree body))
-  (loop for custom-sym in '(hash-table-p make-hash-table gethash remhash hash-table-count
+  (loop for custom-sym in '(hash-table-p hash-table-test make-hash-table gethash remhash hash-table-count
                             maphash with-hash-table-iterator clrhash hash-table-rehash-size
                             hash-table-rehash-threshold hash-table-size)
       for cl-sym = (find-symbol (symbol-name custom-sym) '#:common-lisp)
@@ -195,6 +195,11 @@ Offending form: ~S" loop-form))))
     (cl:hash-table-rehash-threshold #1#))
   
   (defun hash-table-size (ht)
-    (cl:hash-table-size #1#)))
+    (cl:hash-table-size #1#))
+  
+  (defun hash-table-test (ht)
+    (etypecase ht
+      (hash-table (cl:hash-table-test ht))
+      (custom-hash-table (cht.test ht)))))
 
 ) ;; #+

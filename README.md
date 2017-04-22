@@ -25,7 +25,7 @@ The standard hash table related functions are **supported**:
 
 * get/set: GETHASH, REMHASH, CLRHASH;
 * iteration: WITH-HASH-TABLE-ITERATOR, MAPHASH;
-* statistics: HASH-TABLE-COUNT, HASH-TABLE-REHASH-SIZE, HASH-TABLE-REHASH-THRESHOLD, HASH-TABLE-SIZE.
+* statistics: HASH-TABLE-P, HASH-TABLE-TEST, HASH-TABLE-COUNT, HASH-TABLE-REHASH-SIZE, HASH-TABLE-REHASH-THRESHOLD, HASH-TABLE-SIZE.
 
 Hash table iteration using LOOP (using HASH-KEY or HASH-VALUE) is **not supported** in Lisp implementations where the fall-back solution is used, therefore cannot be used in core that is supposed to be portable.
 
