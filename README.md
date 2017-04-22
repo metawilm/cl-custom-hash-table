@@ -36,7 +36,7 @@ The fall-back solution is not thread-safe. The native implementation may or may 
 Supported implementations
 -------------------------
 
-See the [build status](https://travis-ci.org/metawilm/cl-custom-hash-table) on Travis-CI, and the [coverage status](https://coveralls.io/github/metawilm/cl-custom-hash-table?branch=master) on Coveralls.
+See the [build status](https://travis-ci.org/metawilm/cl-custom-hash-table) on Travis-CI, and the [coverage status](https://coveralls.io/github/metawilm/cl-custom-hash-table?branch=master) on Coveralls:
 
 | Common Lisp Implementation | Native | Fallback |
 |:-:|:-:|:-:|
@@ -95,7 +95,7 @@ custom TEST and HASH arguments for MAKE-HASH-TABLE.
 This library is a small wrapper around the vendor-specific extensions.
 (Allegro CL, CCL, CMUCL, LispWorks, SBCL) 
 
-In other Lisp implementations (ECL) a fall-back solution is used:
+In other Lisp implementations (ABCL, CLISP, ECL) a fall-back solution is used:
 
 * custom hash tables are created on top of standard hash tables;
 * the WITH-CUSTOM-HASH-TABLE code walker replaces GETHASH and friends by custom functions that work on both standard and "custom" hash tables.
