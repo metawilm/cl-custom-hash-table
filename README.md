@@ -36,14 +36,14 @@ The fall-back solution is not thread-safe. The native implementation may or may 
 Supported implementations
 -------------------------
 
-See the [build status](https://travis-ci.org/metawilm/cl-custom-hash-table) on Travis-CI, and the [coverage status](https://coveralls.io/github/metawilm/cl-custom-hash-table?branch=master) on Coveralls.
+See the [build status](https://travis-ci.org/metawilm/cl-custom-hash-table) on Travis-CI, and the [coverage status](https://coveralls.io/github/metawilm/cl-custom-hash-table?branch=master) on Coveralls:
 
 | Common Lisp Implementation | Native | Fallback |
 |:-:|:-:|:-:|
 | [ABCL](https://common-lisp.net/project/armedbear/) | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=abcl+FALLBACK&label=ABCL+fallback) |
 | [Allegro CL](http://franz.com/products/allegrocl/) | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=allegro+NATIVE&label=Allegro+native) | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=allegro+FALLBACK&label=Allegro+fallback) |
 | [Clozure CL](http://clozure.com/clozurecl.html)    | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ccl+NATIVE&label=CCL+native)         | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ccl+FALLBACK&label=CCL+fallback) |
-| [CLISP](http://clisp.sourceforge.net)              | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=clisp+FALLBACK&label=CCL+fallback) |
+| [CLISP](http://clisp.sourceforge.net)              | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=clisp+FALLBACK&label=CLISP+fallback) |
 | [CMUCL](http://www.cons.org/cmucl/)                | ? | ? |
 | [ECL](http://ecls.sourceforge.net/)                | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ecl+FALLBACK&label=ECL+fallback) |
 | [LispWorks](http://www.lispworks.com/)             | ? | ? |
@@ -95,7 +95,7 @@ custom TEST and HASH arguments for MAKE-HASH-TABLE.
 This library is a small wrapper around the vendor-specific extensions.
 (Allegro CL, CCL, CMUCL, LispWorks, SBCL) 
 
-In other Lisp implementations (ECL) a fall-back solution is used:
+In other Lisp implementations (ABCL, CLISP, ECL) a fall-back solution is used:
 
 * custom hash tables are created on top of standard hash tables;
 * the WITH-CUSTOM-HASH-TABLE code walker replaces GETHASH and friends by custom functions that work on both standard and "custom" hash tables.
