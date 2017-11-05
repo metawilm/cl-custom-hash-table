@@ -41,6 +41,7 @@ script:
   - cl -e '(in-package :cl-user)'
        -e '(cond ((asdf/os:getenv "FALLBACK") (push :custom-hash-table-fallback *features*))
                  ((asdf/os:getenv "NATIVE") (push :custom-hash-table-native *features*)))'
+       -e '(when (member :sbcl *features*) (dolist (s (quote (:trivial-features :babel))) (ql:quickload s)))'
        -e '(progn (ql:quickload :cl-custom-hash-table) (ql:quickload :cl-custom-hash-table-test))'
        -e '(defun do-test ()
              (asdf:oos (read-from-string "asdf::load-op") :cl-custom-hash-table :force t)
