@@ -115,8 +115,10 @@ Offending form: ~S" loop-form))))
                          (loop for x-and-val in existing-values
                              for (x-key . nil) = x-and-val
                              when (funcall test-fn key x-key)
-                             do (progn (setf (cdr x-and-val) new-val) (return-from gethash))
-                             finally (push (cons key new-val) (gethash key.hash real-ht)))))))
+                             do (progn (setf (cdr x-and-val) new-val)
+                                       (return-from gethash new-val))
+                             finally (push (cons key new-val) (gethash key.hash real-ht))
+                                     (return new-val))))))
 
 (defun remhash (key ht)
   (etypecase ht
