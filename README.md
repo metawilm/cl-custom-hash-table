@@ -1,6 +1,8 @@
 CL-CUSTOM-HASH-TABLE: Custom hash tables for Common Lisp
 ========================================================
 
+[![](https://github.com/metawilm/cl-custom-hash-table/actions/workflows/run-tests.yaml/badge.svg?branch=master)](https://github.com/metawilm/cl-custom-hash-table/actions)
+
 Introduction
 ------------
 
@@ -36,18 +38,16 @@ The fall-back solution is not thread-safe. The native implementation may or may 
 Supported implementations
 -------------------------
 
-See the [build status](https://travis-ci.org/metawilm/cl-custom-hash-table) on Travis-CI, and the [coverage status](https://coveralls.io/github/metawilm/cl-custom-hash-table?branch=master) on Coveralls:
-
 | Common Lisp Implementation | Native | Fallback |
 |:-:|:-:|:-:|
-| [ABCL](https://common-lisp.net/project/armedbear/) | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=abcl+FALLBACK&label=ABCL+fallback) |
-| [Allegro CL](http://franz.com/products/allegrocl/) | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=allegro+NATIVE&label=Allegro+native) | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=allegro+FALLBACK&label=Allegro+fallback) |
-| [Clozure CL](http://clozure.com/clozurecl.html)    | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ccl+NATIVE&label=CCL+native)         | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ccl+FALLBACK&label=CCL+fallback) |
-| [CLISP](http://clisp.sourceforge.net)              | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=clisp+FALLBACK&label=CLISP+fallback) |
+| [ABCL](https://common-lisp.net/project/armedbear/) | ? | ? |
+| [Allegro CL](http://franz.com/products/allegrocl/) | ? | ? |
+| [Clozure CL](http://clozure.com/clozurecl.html)    | ? | ? |
+| [CLISP](http://clisp.sourceforge.net)              | ? | ? |
 | [CMUCL](http://www.cons.org/cmucl/)                | ? | ? |
-| [ECL](http://ecls.sourceforge.net/)                | n/a                                                                                                                                                                       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=ecl+FALLBACK&label=ECL+fallback) |
+| [ECL 23.9.9](https://ecl.common-lisp.dev)          | &#9989; | &#9989; |
 | [LispWorks](http://www.lispworks.com/)             | ? | ? |
-| [SBCL](http://sbcl.sourceforge.net/)               | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=sbcl+NATIVE&label=SBCL+native)       | ![Build Status](https://travis-build-job-badge.herokuapp.com/badge?user=metawilm&repo=cl-custom-hash-table&branch=master&envContains=sbcl+FALLBACK&label=SBCL+fallback) ![Coverage Status](https://coveralls.io/repos/github/metawilm/cl-custom-hash-table/badge.svg?branch=master) |
+| [SBCL](http://sbcl.sourceforge.net/)               | ? | ? |
 
 Example
 -------

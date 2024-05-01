@@ -6,4 +6,4 @@
   (:use #:cl-custom-hash-table #:hu.dwim.stefil #:common-lisp)
   #+custom-hash-table-fallback
   (:import-from #:cl-custom-hash-table #:custom-hash-table)
-  (:export #:run))
+  (:export #:run #:run-without-debugging))

@@ -127,10 +127,20 @@
   (signals error (eval '(with-custom-hash-table 
                          (loop for x being the #:hash-values in (make-hash-table)
                              do nil))))
-  
-  (terpri)
-  (format t "Test success!~%")
   t)
 
+(defun test-failures-p ()
+  (when (plusp #1=(length (hu.dwim.stefil::failure-descriptions-of *last-test-result*)))
+    #1#))
+
+(defun run-without-debugging ()
+  (without-debugging (run))
+  (if #1=(test-failures-p)
+      (error "There were ~d test failures" #1#)
+    (format t "No test failures.~%")))
+
 (defun run ()
-  (basic-test))
+  (prog1 (basic-test)
+    (if #1=(test-failures-p)
+        (format t "~%There were ~d test failures~%" #1#)
+      (format t "~%Test success!~%"))))
