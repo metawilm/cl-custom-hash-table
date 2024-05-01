@@ -93,9 +93,9 @@ Implementation details
 Several Lisp implementations already support
 custom TEST and HASH arguments for MAKE-HASH-TABLE.
 This library is a small wrapper around the vendor-specific extensions.
-(Allegro CL, CCL, CMUCL, LispWorks, SBCL) 
+(Allegro CL, CCL, CMUCL, ECL, LispWorks, SBCL)
 
-In other Lisp implementations (ABCL, CLISP, ECL) a fall-back solution is used:
+In other Lisp implementations (ABCL, CLISP) a fall-back solution is used:
 
 * custom hash tables are created on top of standard hash tables;
 * the WITH-CUSTOM-HASH-TABLE code walker replaces GETHASH and friends by custom functions that work on both standard and "custom" hash tables.
