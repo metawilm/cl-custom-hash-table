@@ -10,7 +10,7 @@
            (if present-p
                (pushnew feature *features*)
              (setf *features* (remove feature *features*)))))
-    (let ((native (or #+(or allegro ccl cmu lispworks sbcl) t)))
+    (let ((native (or #+(or allegro ccl cmu ecl lispworks sbcl) t)))
       (register-feature :custom-hash-table-native native)
       (register-feature :custom-hash-table-fallback (not native))))
   
