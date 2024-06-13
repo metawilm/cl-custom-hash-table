@@ -42,8 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scenario: [ecl_native, ecl_fallback]
-    needs: [install_quicklisp, install_ecl]
+        scenario: [ecl_native, ecl_fallback, sbcl_native, sbcl_fallback, clisp_native, clisp_fallback]
+    needs: [install_quicklisp]
     steps:
       - uses: actions/checkout@v4
       - run: |
@@ -72,3 +72,33 @@ jobs:
       - if: matrix.scenario == 'ecl_fallback'
         run: |
           ecl --shell /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests-fallback.lisp
+
+      - if: (matrix.scenario == 'sbcl_native') || (matrix.scenario == 'sbcl_fallback')
+        run: |
+         sudo apt-get install sbcl
+      - if: matrix.scenario == 'sbcl_native'
+        run: |
+          sbcl --script /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests.lisp
+      - if: matrix.scenario == 'sbcl_fallback'
+        run: |
+          sbcl --script /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests-fallback.lisp
+
+      - if: (matrix.scenario == 'clisp_native') || (matrix.scenario == 'clisp_fallback')
+        run: |
+         sudo apt-get install clisp
+      - if: matrix.scenario == 'clisp_native'
+        run: |
+          clisp /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests.lisp
+      - if: matrix.scenario == 'clisp_fallback'
+        run: |
+          clisp /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests-fallback.lisp
+
+      - if: (matrix.scenario == 'cmucl_native') || (matrix.scenario == 'cmucl_fallback')
+        run: |
+         sudo apt-get install cmucl
+      - if: matrix.scenario == 'cmucl_native'
+        run: |
+          cmucl -load /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests.lisp
+      - if: matrix.scenario == 'cmucl_fallback'
+        run: |
+          cmucl -load /home/runner/work/cl-custom-hash-table/cl-custom-hash-table/.github/workflows/github-workflow-tests-fallback.lisp
