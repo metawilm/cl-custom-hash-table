@@ -43,11 +43,11 @@ Supported implementations
 | [ABCL](https://common-lisp.net/project/armedbear/) | ? | ? |
 | [Allegro CL](http://franz.com/products/allegrocl/) | ? | ? |
 | [Clozure CL](http://clozure.com/clozurecl.html)    | ? | ? |
-| [CLISP](http://clisp.sourceforge.net)              | ? | ? |
+| [CLISP 2.49.93](https://clisp.sourceforge.io)      | &#9989; | &#9989; |
 | [CMUCL](http://www.cons.org/cmucl/)                | ? | ? |
 | [ECL 23.9.9](https://ecl.common-lisp.dev)          | &#9989; | &#9989; |
 | [LispWorks](http://www.lispworks.com/)             | ? | ? |
-| [SBCL](http://sbcl.sourceforge.net/)               | ? | ? |
+| [SBCL 2.1.11](https://www.sbcl.org)                | &#9989; | &#9989; |
 
 Example
 -------
